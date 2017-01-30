@@ -60,7 +60,7 @@ int pciinfoFind(char vendorID[], char deviceID[], char devicePath[], uint32_t de
  * 	@since 		2016-10-14
  * 	@author		Andreas Kaeberlein
  */
-int pcimemioBarSize(char sysPathPciDev[], uint32_t byteSize[]);
+int pciinfoBarSize(char sysPathPciDev[], uint32_t byteSize[]);
 
 
 //--------------------------------------------------------------

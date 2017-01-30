@@ -36,7 +36,7 @@ int main (int argc, char *argv[])
 	/** variables **/
 	char 		*vendorID, *deviceID, *cmd;
 	char		pciSysPath[256];
-	uint32_t	barSizes[6]
+	uint32_t	barSizes[6];
 
 
 	
@@ -50,8 +50,8 @@ int main (int argc, char *argv[])
 	if(argc < 3) {
 		// main		typ 	0x110A	0x4080
 		// argv[0]  [1]   	[2]     [3]
-		fprintf(stderr, "\nUsage:\t%s { cmd } { vendorID } { deviceID } \n"
-			"\tcmd     : command for providing information"
+		fprintf(stderr, "\nUsage:\t%s { cmd } { vendorID } { deviceID }\n"
+			"\tcmd     : command for providing information\n"
 			"\tvendorID: vendor identification of PCI device f.e. 0x110A\n"
 			"\tdeviceID: device identification of PCI device f.e. 0x4080\n"
 			"\tdata    : data to be written\n\n",
@@ -65,10 +65,10 @@ int main (int argc, char *argv[])
 	deviceID	= argv[3];
 	
 	/* process command */
-    switch(cmd) {
+    switch(*cmd) {
 		case 'f':
 			pciinfoFind(vendorID, deviceID, pciSysPath, sizeof(pciSysPath)/sizeof(pciSysPath[0]));
-			printf("Found PCI Device Path '%s'", pciSysPath);
+			printf("Found PCI device system path: '%s'\n\n", pciSysPath);
 			break;
 		case 'b':
 			pciinfoFind(vendorID, deviceID, pciSysPath, sizeof(pciSysPath)/sizeof(pciSysPath[0]));
@@ -79,7 +79,7 @@ int main (int argc, char *argv[])
 				"\tf    : find pci device system path"
 				"\tb    : get bar sizes of pci device\n\n",
 				argv[0]);
-			exit(EXIT_FAILED);
+			exit(EXIT_FAILURE);
 	}
 	
 	/* gracefull end */
