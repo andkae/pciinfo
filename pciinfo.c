@@ -91,7 +91,7 @@ int pciinfoFind(char vendorID[], char deviceID[], char devicePath[], uint32_t de
 		 * 	before: /sys/bus/pci/devices/0000:03:0d.0/vendor:1:0x110a
 		 * 	after:	/sys/bus/pci/devices/0000:03:0d.0
 		 */
-		if (strstr(line, "/vendor")-line < (sizeof(devPath)/sizeof(devPath[0]))) {
+		if (strstr(line, "/vendor")-line < (int)(sizeof(devPath)/sizeof(devPath[0]))) {
 			uint32DevPathIdx = strstr(line, "/vendor")-line;
 		} else {
 			uint32DevPathIdx = 0;
