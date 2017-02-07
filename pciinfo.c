@@ -198,3 +198,35 @@ int pciinfoBarSize(char sysPathPciDev[], uint32_t byteSize[])
 	/* finish function */
 	return 0;
 }
+
+
+
+/** 
+ *  pciinfoBarPath
+ * 	--------------
+ */
+int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar, char devicePath[], uint32_t devicePathMax)
+{
+	/** used variables **/
+
+
+	/* function call message */
+	pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
+
+   	/* find pci device */
+	if (pciinfoFind(vendorID, deviceID, devicePath, devicePathMax) != 0) {
+		pciinfoVerbosePrint("Unable to find PCI Device with VendorID=%s and DeviceID=%s\n", vendorID, deviceID);
+		return -1;
+	}
+	
+	/* build final path */
+	if (strlen(devicePath)+10 < devicePathMax) {
+		sprintf(devicePath, "%s%s%d", devicePath, "/resource", bar);
+	} else {
+		pciinfoVerbosePrint("To few memory alocated ...abort\n");
+		return -1;
+	}
+	
+	/* finish function */
+	return 0;
+}
