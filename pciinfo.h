@@ -79,5 +79,18 @@ int pciinfoBarSize(char sysPathPciDev[], uint32_t byteSize[]);
 int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar, char devicePath[], uint32_t devicePathMax);
 
 
+
+/** @brief	extracts physical address of given PCI Bars
+ * 
+ * 	@param[in]	sysPathPciDev	system path to pci device
+ * 	@param[in]	barNo			pci device bar number
+ * 	@param[out]	barPhyAddr		physical address
+ * 	@return		state
+ * 	@since 		2017-05-08
+ * 	@author		Kartik Desai
+ */
+int pciinfoBarPhyAddr(char sysPathPciDev[], char barNo[], uint32_t * barPhyAddr);
+
+
 //--------------------------------------------------------------
 #endif // __PCI_PCIINFO
