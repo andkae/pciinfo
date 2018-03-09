@@ -237,10 +237,11 @@ int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar, char devicePat
  *  pciinfoBarPhyAddr
  * 	-----------------
  */
-int pciinfoBarPhyAddr(char sysPathPciDev[], char barNo[], uint32_t * barPhyAddr)
+int pciinfoBarPhyAddr(char sysPathPciDev[], uint8_t barNo, uint32_t * barPhyAddr)
 {
 	/** used variables **/
-	char 	line[1023];	// read buffer
+	char 	line[1023];					// read buffer
+	char	sysPathTemp[1024] = {'\0'};	// temporary buffer variable
 	FILE 	* fptr;
 	uint8_t index;
 
@@ -252,24 +253,27 @@ int pciinfoBarPhyAddr(char sysPathPciDev[], char barNo[], uint32_t * barPhyAddr)
 	*  before: /sys/bus/pci/devices/0000:04:0d.0/
 	*  after:  /sys/bus/pci/devices/0000:04:0d.0/resource
 	*/
-	strcat(sysPathPciDev, "/resource");
-
-	fptr = fopen(sysPathPciDev, "r");
+	strncpy(sysPathTemp, sysPathPciDev, sizeof(sysPathTemp)/sizeof(sysPathTemp[0]));
+	strcat(sysPathTemp, "/resource");
+	
+	/* open file handle */
+	fptr = fopen(sysPathTemp, "r");
 
 	/* iterate over all possible pci bars */
 	/* line number is the bar number */
-	for (index = 0; index < atoi(barNo); index++) 
+	for (index = 0; index < barNo; index++) 
 	{
 		if (fgets(line, sizeof(line), fptr) == NULL) 
 		{
 			pciinfoVerbosePrint("ERROR: bar %s not resent\n", barNo);
+			fclose(fptr);
 			return -1;
 		}
 	}
 	/* first column is the starting address of the bar */
 	fscanf(fptr, "%x", barPhyAddr);
 
-   /* close opened pipe */
+    /* close opened pipe */
 	fclose(fptr);
 
 	/* finish function */

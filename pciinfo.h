@@ -89,7 +89,7 @@ int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar, char devicePat
  * 	@since 		2017-05-08
  * 	@author		Kartik Desai
  */
-int pciinfoBarPhyAddr(char sysPathPciDev[], char barNo[], uint32_t * barPhyAddr);
+int pciinfoBarPhyAddr(char sysPathPciDev[], uint8_t barNo, uint32_t * barPhyAddr);
 
 
 //--------------------------------------------------------------
