@@ -42,9 +42,10 @@
 int main (int argc, char *argv[])
 {
 	/** variables **/
-	char 		*vendorID, *deviceID, *cmd;
+	char 		*vendorID, *deviceID;
 	char		pciSysPath[256];
 	uint32_t	barSizes[6];
+	uint32_t	phyAdr;
 
 
 	
@@ -55,16 +56,13 @@ int main (int argc, char *argv[])
 	}	
 	
 	/* to few arguments */
-	if(argc < 3) {
+	if(argc < 2) {
 		// main		typ 	0x110A	0x4080
 		// argv[0]  [1]   	[2]     [3]
-		printf("ERROR:pciinfo_main:%s: Two few arguments.\n", __FUNCTION__);
+		printf("ERROR:pciinfo_main:main: Two few arguments.\n");
 		printf("\n");
 		printf("\n");
-		printf("Usage:  %s { cmd } { vendorID } { deviceID }\n", argv[0]);
-		printf("  cmd      : command for providing information\n");
-		printf("    'f'    : find pci device in unix system path\n");
-		printf("    'b'    : get bar sizes of pci device\n");
+		printf("Usage:  %s { vendorID } { deviceID }\n", argv[0]);
 		printf("  vendorID : vendor identification of PCI device f.e. 0x110A\n");
 		printf("  deviceID : device identification of PCI device f.e. 0x4080\n");
 		printf("\n");
@@ -73,27 +71,39 @@ int main (int argc, char *argv[])
 	}	
 	
 	/* fill command line arguments in variables */
-	cmd			= argv[1];
-	vendorID	= argv[2];
-	deviceID	= argv[3];
+	vendorID	= argv[1];
+	deviceID	= argv[2];
 	
-	/* process command */
-    switch(*cmd) {
-		case 'f':
-			pciinfoFind(vendorID, deviceID, pciSysPath, sizeof(pciSysPath)/sizeof(pciSysPath[0]));
-			printf("Found PCI device system path: '%s'\n\n", pciSysPath);
-			break;
-		case 'b':
-			pciinfoFind(vendorID, deviceID, pciSysPath, sizeof(pciSysPath)/sizeof(pciSysPath[0]));
-			pciinfoBarSize(pciSysPath, barSizes);
-			break;
-		default:
-			fprintf(stderr, "\nUnknown command:\t%s { f | b } \n"
-				"\tf    : find pci device system path"
-				"\tb    : get bar sizes of pci device\n\n",
-				argv[0]);
-			exit(EXIT_FAILURE);
+	/* acquire system path */
+	if ( pciinfoFind(vendorID, deviceID, pciSysPath, sizeof(pciSysPath)/sizeof(pciSysPath[0])) != 0 ) {
+		printf("ERROR:pciinfo_main:main: Failed to find device with vid=%s and did=%s\n", vendorID, deviceID);
+		exit(EXIT_FAILURE);
 	}
+	printf("Linux system path for vid=%s and did=%s:\n", vendorID, deviceID);
+	printf("  '%s'\n", pciSysPath);
+	printf("\n");
+	
+	
+	/* get pyhsical addresses */
+	printf("Physical PCI Addresses:\n");
+	for (uint8_t i=0; i<6; i++) {
+		if ( pciinfoBarPhyAddr(pciSysPath, i, &phyAdr) == 0 ) {
+			printf("  BAR%i=0x%08x\n", i, phyAdr);
+		} else {
+			printf("  BAR%i=unused\n", i);
+		}
+	}
+	printf("\n");
+	
+	
+	/* get Bar Sizes */
+	printf("PCI BAR Sizes:\n");
+	pciinfoBarSize(pciSysPath, barSizes);
+	for (uint8_t i=0; i<6; i++) {
+		printf("  BAR%i=%12i Byte\n", i, barSizes[i]);
+	}
+	printf("\n");
+	
 	
 	/* gracefull end */
 	exit(EXIT_SUCCESS);
