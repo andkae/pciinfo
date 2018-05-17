@@ -21,21 +21,21 @@
 CC=gcc
 
 # set compiler flags
-CFLAGS=-c -Wall
+CFLAGS=-c -O -Wall -Wextra
 
 
-all: pciInfoCmdline
+all: ./bin/pciinfo_main
 
 
-pciInfoCmdline: pciInfoCmdline.o pciinfo.o
+./bin/pciinfo_main: ./bin/pciinfo_main.o ./bin/pciinfo.o
 
 
-pciInfoCmdline.o: pciInfoCmdline.c
-	$(CC) $(CFLAGS) pciInfoCmdline.c
+./bin/pciinfo_main.o: ./src/pciinfo_main.c
+	$(CC) $(CFLAGS) ./src/pciinfo_main.c -o ./bin/pciinfo_main.o
 
 	
-pciinfo.o: pciinfo.c
-	$(CC) $(CFLAGS) pciinfo.c
+./bin/pciinfo.o: ./src/pciinfo.c
+	$(CC) $(CFLAGS) ./src/pciinfo.c -o ./bin/pciinfo.o
 
 clean:
-	rm *o pciInfoCmdline
+	rm ./bin/*o ./bin/pciinfo_main
