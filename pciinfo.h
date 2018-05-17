@@ -24,19 +24,6 @@
 #define __PCI_PCIINFO
 
 
-/** Standard libs **/
-#include <stdio.h>			// f.e. printf
-#include <stdlib.h>			// defines four variables, several macros,
-							// and various functions for performing
-							// general functions
-#include <stdint.h>			// defines fiexd data types, like int8_t...
-#include <unistd.h>			// system call wrapper functions such as fork, pipe and I/O primitives (read, write, close, etc.).
-#include <string.h>			// string handling functions
-#include <stdarg.h>			// variable parameter lists
-
-
-
-
 /** @brief	looks in linux system path for PCI devices with given
  * 			VendorID and DeviceID
  * 

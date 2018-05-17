@@ -18,13 +18,24 @@
 
 
 /** Includes **/
-#include "pciinfo.h"
+/* Standard libs */
+#include <stdio.h>			// f.e. printf
+#include <stdlib.h>			// defines four variables, several macros,
+							// and various functions for performing
+							// general functions
+#include <stdint.h>			// defines fiexd data types, like int8_t...
+#include <unistd.h>			// system call wrapper functions such as fork, pipe and I/O primitives (read, write, close, etc.).
+#include <string.h>			// string handling functions
+#include <stdarg.h>			// variable parameter lists
+
+/* User libs */
+#include "pciinfo.h"		// function prototypes
 
 
 
 
  /** globals **/
-uint8_t uint8pciinfoVerboseLevel = 0;
+volatile uint8_t uint8pciinfoVerboseLevel = 0;
 
 
 
