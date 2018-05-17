@@ -109,7 +109,8 @@ int pciinfoFind(char vendorID[], char deviceID[], char devicePath[], uint32_t de
 		foundDevice = popen(cmd, "r");
 		
 		/* process system call response */
-		fscanf(foundDevice, "%s", line2);	// read only first line
+		if ( fscanf(foundDevice, "%s", line2) ){	// read only first line
+		}
 		if (strcmp(line2, deviceID) == 0) {
 			++uint8FoundDevice;				// increment match counter
 			strncpy(devicePath, devPath, devicePathMax);
@@ -271,7 +272,8 @@ int pciinfoBarPhyAddr(char sysPathPciDev[], uint8_t barNo, uint32_t * barPhyAddr
 		}
 	}
 	/* first column is the starting address of the bar */
-	fscanf(fptr, "%x", barPhyAddr);
+	if ( fscanf(fptr, "%x", barPhyAddr) ){
+	}
 
     /* close opened pipe */
 	fclose(fptr);
