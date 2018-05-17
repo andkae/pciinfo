@@ -18,12 +18,20 @@
 
 
 /** Standard libs **/
+#include <stdio.h>			// f.e. printf
+#include <stdlib.h>			// defines four variables, several macros,
+							// and various functions for performing
+							// general functions
+#include <stdint.h>			// defines fiexd data types, like int8_t...
+#include <unistd.h>			// system call wrapper functions such as fork, pipe and I/O primitives (read, write, close, etc.).
+#include <string.h>			// string handling functions
+#include <stdarg.h>			// variable parameter lists
 #include <fcntl.h>			// manipulate file descriptor
 #include <ctype.h>			// used for testing and mapping characters
 
+
 /** User Libs **/
 #include "pciinfo.h"
-
 
 
 
@@ -50,13 +58,18 @@ int main (int argc, char *argv[])
 	if(argc < 3) {
 		// main		typ 	0x110A	0x4080
 		// argv[0]  [1]   	[2]     [3]
-		fprintf(stderr, "\nUsage:\t%s { cmd } { vendorID } { deviceID }\n"
-			"\tcmd     : command for providing information\n"
-			"\tvendorID: vendor identification of PCI device f.e. 0x110A\n"
-			"\tdeviceID: device identification of PCI device f.e. 0x4080\n"
-			"\tdata    : data to be written\n\n",
-			argv[0]);
-		exit(1);
+		printf("ERROR:pciinfo_main:%s: Two few arguments.\n", __FUNCTION__);
+		printf("\n");
+		printf("\n");
+		printf("Usage:  %s { cmd } { vendorID } { deviceID }\n", argv[0]);
+		printf("  cmd      : command for providing information\n");
+		printf("    'f'    : find pci device in unix system path\n");
+		printf("    'b'    : get bar sizes of pci device\n");
+		printf("  vendorID : vendor identification of PCI device f.e. 0x110A\n");
+		printf("  deviceID : device identification of PCI device f.e. 0x4080\n");
+		printf("\n");
+		printf("\n");
+		exit(EXIT_FAILURE);
 	}	
 	
 	/* fill command line arguments in variables */
