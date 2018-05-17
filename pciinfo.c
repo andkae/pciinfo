@@ -201,10 +201,10 @@ int pciinfoBarSize(char sysPathPciDev[], uint32_t byteSize[])
 	}
 	
 	/* print bar sizes */
-	printf("\tSizes:\n");
-	printf("\t------\n");
+	pciinfoVerbosePrint("\tSizes:\n");
+	pciinfoVerbosePrint("\t------\n");
 	for (i=0; i<6; i++) {
-		printf("\tBAR%d:%I32u Byte\n", i, byteSize[i]);
+		pciinfoVerbosePrint("\tBAR%d:%I32u Byte\n", i, byteSize[i]);
 	}
 	
 	/* finish function */
