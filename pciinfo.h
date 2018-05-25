@@ -78,8 +78,10 @@ int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar, char devicePat
 
 
 
-/** @brief	extracts physical address of given PCI Bars
+/** @brief	get physical bar address
  * 
+ *	extracts physical address of given PCI Bars
+ *
  * 	@param[in]	char				system path to pci device
  * 	@param[in]	uint8_t				pci device bar number
  * 	@param[out]	uint32_t			physical address
