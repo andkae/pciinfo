@@ -57,8 +57,8 @@ int main (int argc, char *argv[])
 	
 	/* to few arguments */
 	if(argc < 2) {
-		// main		typ 	0x110A	0x4080
-		// argv[0]  [1]   	[2]     [3]
+		// main		0x110A	0x4080
+		// argv[0]  [1]   	[2]
 		printf("ERROR:pciinfo_main:main: Two few arguments.\n");
 		printf("\n");
 		printf("\n");
