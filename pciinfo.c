@@ -10,7 +10,7 @@
  @Version            :
  @Brief              : function to get infos about pci devices
  @Last Modified by   : z003su8e
- @Last Modified time : 2018-08-09 10:49:28
+ @Last Modified time : 2018-08-09 11:00:37
 *******************************************************************************/
 
 
@@ -39,7 +39,7 @@ volatile uint8_t uint8pciinfoVerboseLevel = 0;
  *  pciinfoVerbosePrint
  *  -------------------
  */
-void pciinfoVerbosePrint(char *template, ...)
+static void pciinfoVerbosePrint(char *template, ...)
 {
 	/** variables **/
 	va_list ap;
