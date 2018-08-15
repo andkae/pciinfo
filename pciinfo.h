@@ -10,7 +10,7 @@
  @Version            :
  @Brief              : function to get infos about pci devices
  @Last Modified by   : z003su8e
- @Last Modified time : 2018-08-09 09:45:49
+ @Last Modified time : 2018-08-15 11:50:23
 *******************************************************************************/
 
 
@@ -38,7 +38,7 @@
  *  @since      2016-10-13
  *  @author     Andreas Kaeberlein
  */
-int pciinfoFind(char vendorID[], char deviceID[], char devicePath[],
+int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
                 uint32_t devicePathMax);
 
 
@@ -55,7 +55,7 @@ int pciinfoFind(char vendorID[], char deviceID[], char devicePath[],
  *  @since      2016-10-14
  *  @author     Andreas Kaeberlein
  */
-int pciinfoBarSize(char sysPathPciDev[], uint32_t byteSize[]);
+int pciinfoBarSize(const char sysPathPciDev[], uint32_t byteSize[]);
 
 
 
@@ -74,7 +74,7 @@ int pciinfoBarSize(char sysPathPciDev[], uint32_t byteSize[]);
  *  @since      2017-02-07
  *  @author     Andreas Kaeberlein
  */
-int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar,
+int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
                    char devicePath[], uint32_t devicePathMax);
 
 
@@ -92,7 +92,7 @@ int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar,
  *  @since      2017-05-08
  *  @author     Kartik Desai
  */
-int pciinfoBarPhyAddr(char sysPathPciDev[], uint8_t barNo,
+int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
                       uint32_t *barPhyAddr);
 
 

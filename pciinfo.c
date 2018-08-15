@@ -10,7 +10,7 @@
  @Version            :
  @Brief              : function to get infos about pci devices
  @Last Modified by   : z003su8e
- @Last Modified time : 2018-08-09 11:00:37
+ @Last Modified time : 2018-08-15 11:48:52
 *******************************************************************************/
 
 
@@ -39,7 +39,7 @@ volatile uint8_t uint8pciinfoVerboseLevel = 0;
  *  pciinfoVerbosePrint
  *  -------------------
  */
-static void pciinfoVerbosePrint(char *template, ...)
+static void pciinfoVerbosePrint(const char *template, ...)
 {
 	/** variables **/
 	va_list ap;
@@ -69,7 +69,7 @@ void pciinfoSetVerboseLevel(uint8_t level)
  *  pciinfoFind
  *  -----------
  */
-int pciinfoFind(char vendorID[], char deviceID[], char devicePath[],
+int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
                 uint32_t devicePathMax)
 {
 	/** used variables **/
@@ -140,7 +140,7 @@ int pciinfoFind(char vendorID[], char deviceID[], char devicePath[],
  *  pciinfoBarSize
  *  --------------
  */
-int pciinfoBarSize(char sysPathPciDev[], uint32_t byteSize[])
+int pciinfoBarSize(const char sysPathPciDev[], uint32_t byteSize[])
 {
 
 	/** used variables **/
@@ -211,7 +211,7 @@ int pciinfoBarSize(char sysPathPciDev[], uint32_t byteSize[])
  *  pciinfoBarPath
  *  --------------
  */
-int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar,
+int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
                    char devicePath[], uint32_t devicePathMax)
 {
 
@@ -244,7 +244,7 @@ int pciinfoBarPath(char vendorID[], char deviceID[], uint8_t bar,
  *  pciinfoBarPhyAddr
  *  -----------------
  */
-int pciinfoBarPhyAddr(char sysPathPciDev[], uint8_t barNo,
+int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
                       uint32_t *barPhyAddr)
 {
 	/** used variables **/
