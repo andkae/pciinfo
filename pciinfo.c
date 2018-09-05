@@ -10,7 +10,7 @@
  @Version            :
  @Brief              : function to get infos about pci devices
  @Last Modified by   : z003su8e
- @Last Modified time : 2018-08-15 11:48:52
+ @Last Modified time : 2018-09-05 10:37:32
 *******************************************************************************/
 
 
@@ -76,7 +76,7 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
 	char     cmd[256];                 /* command buffer */
 	char     devPath[256];             /* path buffer */
 	char     line1[1024], line2[1024]; /* read buffer */
-	uint32_t uint32DevPathIdx;         /* match with buff */
+	uint16_t uint16DevPathIdx;         /* match with buff */
 	uint8_t  uint8FoundDevice;         /* device found */
 	FILE     *foundVendor;             /* system call answer */
 	FILE     *foundDevice;
@@ -98,13 +98,13 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
 		 */
 		if ( (strstr(line1, "/vendor") - line1) <
 		    ((int)(sizeof(devPath) / sizeof(devPath[0]))) ) {
-			uint32DevPathIdx = strstr(line1, "/vendor") - line1;
+			uint16DevPathIdx = (uint16_t)(strstr(line1, "/vendor") - line1);
 		} else {
-			uint32DevPathIdx = 0;
+			uint16DevPathIdx = 0;
 			pciinfoVerbosePrint("Not enough memory to store PCI device path...\n");
 		}
-		strncpy(devPath, line1, uint32DevPathIdx);
-		devPath[uint32DevPathIdx] = '\0';    /* termination character */
+		strncpy(devPath, line1, uint16DevPathIdx);
+		devPath[uint16DevPathIdx] = '\0';    /* termination character */
 
 		/*  build command for device id look up
 		 *  cat /sys/bus/pci/devices/0000:03:0d.0/device
@@ -185,7 +185,7 @@ int pciinfoBarSize(const char sysPathPciDev[], uint32_t byteSize[])
 			 *  -rw------- 1 root root 32768 Feb 11 11:40 /sys/bus/pci/devices/0000:03:0d.0/resource0
 			 */
 			if (4 == j) {
-				byteSize[i] = strtoll(resultLine, NULL, 10);
+				byteSize[i] = (uint32_t)strtol(resultLine, NULL, 10);
 			}
 			++j;    /* increment counter */
 		}
