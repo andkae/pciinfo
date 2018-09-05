@@ -10,7 +10,7 @@
  @Version            :
  @Brief              : function to get infos about pci devices
  @Last Modified by   : z003su8e
- @Last Modified time : 2018-09-05 10:37:32
+ @Last Modified time : 2018-09-05 11:00:25
 *******************************************************************************/
 
 
@@ -22,6 +22,7 @@
 #include <stdarg.h>   /* variable parameter lists */
 #include <stdint.h>   /* defines fixed data types, like int8_t... */
 #include <string.h>   /* string handling functions */
+#include <strings.h>  /* for function strcasecmp */
 #include <unistd.h>   /* system call wrapper functions such as fork, pipe
                        * and I/O primitives (read, write, close, etc.) */
 
@@ -117,7 +118,7 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
 		/* process system call response */
 		if ( fscanf(foundDevice, "%s", line2) ) {    /* read only first line */
 		}
-		if (0 == strcmp(line2, deviceID)) {
+		if (0 == strcasecmp(line2, deviceID)) {
 			++uint8FoundDevice;    /* increment match counter */
 			strncpy(devicePath, devPath, devicePathMax);
 			pciinfoVerbosePrint("vendor=%s/device=%s in '%s'\n", vendorID, line2, devPath);
@@ -144,17 +145,18 @@ int pciinfoBarSize(const char sysPathPciDev[], uint32_t byteSize[])
 {
 
 	/** used variables **/
-	char    cmd[256], rawCmd[256]; /* string for buffering command */
-	char    resultLine[256];       /* command result one file line */
+	char    cmd[1024], rawCmd[1024]; /* string for buffering command */
+	char    resultLine[1024];        /* command result one file line */
 	uint8_t i, j;                  /* iterator */
 	FILE    *cmdResult;            /* stored command result */
+	const uint8_t maxBarNum = 6;
 
 	/* function call message */
 	pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
 	pciinfoVerbosePrint("device: '%s'\n", sysPathPciDev);
 
 	/* init bar data */
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < maxBarNum; i++) {
 		byteSize[i] = 0;
 	}
 
@@ -173,7 +175,7 @@ int pciinfoBarSize(const char sysPathPciDev[], uint32_t byteSize[])
 	}
 
 	/* iterate over six possible pci bars */
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < maxBarNum; i++) {
 		/* build final command and execute*/
 		sprintf(cmd, "%s%d 2>&1", rawCmd, i);    /* 2>&1 redirect stderr */
 		cmdResult = popen(cmd, "r");
@@ -197,7 +199,7 @@ int pciinfoBarSize(const char sysPathPciDev[], uint32_t byteSize[])
 	/* print bar sizes */
 	pciinfoVerbosePrint("\tSizes:\n");
 	pciinfoVerbosePrint("\t------\n");
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < maxBarNum; i++) {
 		pciinfoVerbosePrint("\tBAR%d:%I32u Byte\n", i, byteSize[i]);
 	}
 
