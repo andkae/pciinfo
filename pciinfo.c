@@ -10,17 +10,16 @@
  @Version            :
  @Brief              : function to get infos about pci devices
  @Last Modified by   : z003su8e
- @Last Modified time : 2018-09-20 11:54:22
+ @Last Modified time : 2018-09-20 15:10:59
 *******************************************************************************/
-
 
 /** Includes **/
 /* Standard libs */
+#include <stdarg.h>   /* variable parameter lists */
+#include <stdint.h>   /* defines fixed data types, like int8_t... */
 #include <stdio.h>    /* e.g. printf */
 #include <stdlib.h>   /* defines four variables, several macros, and various
                        * functions for performing general operations */
-#include <stdarg.h>   /* variable parameter lists */
-#include <stdint.h>   /* defines fixed data types, like int8_t... */
 #include <string.h>   /* string handling functions */
 #include <strings.h>  /* for function strcasecmp */
 #include <unistd.h>   /* system call wrapper functions such as fork, pipe
