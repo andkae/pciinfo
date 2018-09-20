@@ -10,7 +10,7 @@
  @Version            :
  @Brief              : function to get infos about pci devices
  @Last Modified by   : z003su8e
- @Last Modified time : 2018-09-05 11:00:25
+ @Last Modified time : 2018-09-20 11:54:22
 *******************************************************************************/
 
 
@@ -32,7 +32,7 @@
 
 
 /** globals **/
-volatile uint8_t uint8pciinfoVerboseLevel = 0;
+static uint8_t uint8pciinfoVerboseLevel = 0;
 
 
 
