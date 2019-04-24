@@ -41,15 +41,15 @@ static uint8_t uint8pciinfoVerboseLevel = 0;
  */
 static void pciinfoVerbosePrint(const char *template, ...)
 {
-	/** variables **/
-	va_list ap;
+    /** variables **/
+    va_list ap;
 
-	/* switch print off */
-	if (0 != uint8pciinfoVerboseLevel) {
-		va_start(ap, template);
-		vprintf(template, ap);
-		va_end(ap);
-	}
+    /* switch print off */
+    if (0 != uint8pciinfoVerboseLevel) {
+        va_start(ap, template);
+        vprintf(template, ap);
+        va_end(ap);
+    }
 }
 
 
@@ -60,7 +60,7 @@ static void pciinfoVerbosePrint(const char *template, ...)
  */
 void pciinfoSetVerboseLevel(uint8_t level)
 {
-	uint8pciinfoVerboseLevel = level;
+    uint8pciinfoVerboseLevel = level;
 }
 
 
@@ -72,135 +72,135 @@ void pciinfoSetVerboseLevel(uint8_t level)
 int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
                 uint32_t devicePathMax)
 {
-	/** used variables **/
-	char     cmd[256];                 /* command buffer */
-	char     devPath[256];             /* path buffer */
-	char     line1[1024], line2[1024]; /* read buffer */
-	uint16_t uint16DevPathIdx;         /* match with buff */
-	uint8_t  uint8FoundDevice;         /* device found */
-	FILE     *foundVendor;             /* system call answer */
-	FILE     *foundDevice;
+    /** used variables **/
+    char     cmd[256];                 /* command buffer */
+    char     devPath[256];             /* path buffer */
+    char     line1[1024], line2[1024]; /* read buffer */
+    uint16_t uint16DevPathIdx;         /* match with buff */
+    uint8_t  uint8FoundDevice;         /* device found */
+    FILE     *foundVendor;             /* system call answer */
+    FILE     *foundDevice;
 
-	/* function call message */
-	pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
+    /* function call message */
+    pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
 
-	/* search in system path for pci devices*/
-	strcpy(cmd, "grep -irnw /sys/bus/pci/devices/*/vendor -e ");
-	strcat(cmd, vendorID);
-	foundVendor = popen(cmd, "r");
+    /* search in system path for pci devices*/
+    strcpy(cmd, "grep -irnw /sys/bus/pci/devices/*/vendor -e ");
+    strcat(cmd, vendorID);
+    foundVendor = popen(cmd, "r");
 
-	/* process found device list for device ID */
-	uint8FoundDevice = 0;
-	while (EOF != fscanf(foundVendor, "%s", line1)) {
-		/*  extract device path for given vendor id
-		 *  before: /sys/bus/pci/devices/0000:03:0d.0/vendor:1:0x110a
-		 *  after:  /sys/bus/pci/devices/0000:03:0d.0
-		 */
-		if ( (strstr(line1, "/vendor") - line1) <
-		    ((int)(sizeof(devPath) / sizeof(devPath[0]))) ) {
-			uint16DevPathIdx = (uint16_t)(strstr(line1, "/vendor") - line1);
-		} else {
-			uint16DevPathIdx = 0;
-			pciinfoVerbosePrint("Not enough memory to store PCI device path...\n");
-		}
-		strncpy(devPath, line1, uint16DevPathIdx);
-		devPath[uint16DevPathIdx] = '\0';    /* termination character */
+    /* process found device list for device ID */
+    uint8FoundDevice = 0;
+    while (EOF != fscanf(foundVendor, "%s", line1)) {
+        /*  extract device path for given vendor id
+         *  before: /sys/bus/pci/devices/0000:03:0d.0/vendor:1:0x110a
+         *  after:  /sys/bus/pci/devices/0000:03:0d.0
+         */
+        if ( (strstr(line1, "/vendor") - line1) <
+            ((int)(sizeof(devPath) / sizeof(devPath[0]))) ) {
+            uint16DevPathIdx = (uint16_t)(strstr(line1, "/vendor") - line1);
+        } else {
+            uint16DevPathIdx = 0;
+            pciinfoVerbosePrint("Not enough memory to store PCI device path...\n");
+        }
+        strncpy(devPath, line1, uint16DevPathIdx);
+        devPath[uint16DevPathIdx] = '\0';    /* termination character */
 
-		/*  build command for device id look up
-		 *  cat /sys/bus/pci/devices/0000:03:0d.0/device
-		 */
-		strcpy(cmd, "cat ");
-		strcat(cmd, devPath);
-		strcat(cmd, "/device");
-		foundDevice = popen(cmd, "r");
+        /*  build command for device id look up
+         *  cat /sys/bus/pci/devices/0000:03:0d.0/device
+         */
+        strcpy(cmd, "cat ");
+        strcat(cmd, devPath);
+        strcat(cmd, "/device");
+        foundDevice = popen(cmd, "r");
 
-		/* process system call response */
-		if ( fscanf(foundDevice, "%s", line2) ) {    /* read only first line */
-		}
-		if (0 == strcasecmp(line2, deviceID)) {
-			++uint8FoundDevice;    /* increment match counter */
-			strncpy(devicePath, devPath, devicePathMax);
-			pciinfoVerbosePrint("vendor=%s/device=%s in '%s'\n", vendorID, line2, devPath);
-		}
+        /* process system call response */
+        if ( fscanf(foundDevice, "%s", line2) ) {    /* read only first line */
+        }
+        if (0 == strcasecmp(line2, deviceID)) {
+            ++uint8FoundDevice;    /* increment match counter */
+            strncpy(devicePath, devPath, devicePathMax);
+            pciinfoVerbosePrint("vendor=%s/device=%s in '%s'\n", vendorID, line2, devPath);
+        }
 
-		/* close opened pipe */
-		pclose(foundDevice);
-	}
+        /* close opened pipe */
+        pclose(foundDevice);
+    }
 
-	/* close opened pipe */
-	pclose(foundVendor);
+    /* close opened pipe */
+    pclose(foundVendor);
 
-	/* finish function */
-	return (uint8FoundDevice - 1);
+    /* finish function */
+    return (uint8FoundDevice - 1);
 }
 
 
 
 /**
  *  pciinfoBarSize
- *		gets bar size from linux
+ *      gets bar size from linux
  */
 int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize)
 {
 
-	/** used variables **/
-	const char	charLs[] = "ls -la ";		// build command for dir list
-	const char	charBar[] = "/resource";	// prepare acces bar file handle
-	char    	cmd[1024]; 					// string for buffering command
-	char    	resultLine[1024];   		// command result one file line
-	uint32_t 	i;               			// iterator
-	FILE    	*cmdResult;         		// stored command result
+    /** used variables **/
+    const char  charLs[] = "ls -la ";       // build command for dir list
+    const char  charBar[] = "/resource";    // prepare acces bar file handle
+    char        cmd[1024];                  // string for buffering command
+    char        resultLine[1024];           // command result one file line
+    uint32_t    i;                          // iterator
+    FILE        *cmdResult;                 // stored command result
 
 
-	/* function call message */
-	pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
+    /* function call message */
+    pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
 
-	/* check argument */
-	if ( bar > 5 ) {
-		pciinfoVerbosePrint("  ERROR:%s: Bar=%i exceeds max of 5\n", __FUNCTION__, bar);
-		return -1;
-	}
+    /* check argument */
+    if ( bar > 5 ) {
+        pciinfoVerbosePrint("  ERROR:%s: Bar=%i exceeds max of 5\n", __FUNCTION__, bar);
+        return -1;
+    }
 
-	/* init */
-	*byteSize = 0;
-	cmd[0] = '\0';
+    /* init */
+    *byteSize = 0;
+    cmd[0] = '\0';
 
-	/*  build system call request for bar size
-	 *  ls -la /sys/bus/pci/devices/0000:03:0d.0/resource*
-	 */
-	if ( (sizeof(cmd) / sizeof(cmd[0])) >
-		 (strlen(charLs) + strlen(sysPathPciDev) + strlen(charBar) + 6 + 1)
-	) {
-		/* build command */
-		sprintf(cmd, "%s%s%s%d 2>&1", charLs, sysPathPciDev, charBar, bar);	// 2>&1 redirect stderr
-		
-	} else {
-		/* Not enough memory */
-		pciinfoVerbosePrint("  ERROR:%s: To less memory allocated\n", __FUNCTION__);
-		cmd[0] = '\0';
-		return -1;
-	}
+    /*  build system call request for bar size
+     *  ls -la /sys/bus/pci/devices/0000:03:0d.0/resource*
+     */
+    if ( (sizeof(cmd) / sizeof(cmd[0])) >
+         (strlen(charLs) + strlen(sysPathPciDev) + strlen(charBar) + 6 + 1)
+    ) {
+        /* build command */
+        sprintf(cmd, "%s%s%s%d 2>&1", charLs, sysPathPciDev, charBar, bar); // 2>&1 redirect stderr
 
-	/* execute command */
-	cmdResult = popen(cmd, "r");
+    } else {
+        /* Not enough memory */
+        pciinfoVerbosePrint("  ERROR:%s: To less memory allocated\n", __FUNCTION__);
+        cmd[0] = '\0';
+        return -1;
+    }
 
-	/* process acquired data */
-	i = 0;
-	while (EOF != fscanf(cmdResult, "%s", resultLine)) {
-		/*  get fifth element in table, is file size
-		 *  -rw------- 1 root root 32768 Feb 11 11:40 /sys/bus/pci/devices/0000:03:0d.0/resource0
-		 */
-		if (4 == i) {
-			*byteSize = (uint32_t) strtol(resultLine, NULL, 10);
-		}
-		++i;    // increment counter
-	}
+    /* execute command */
+    cmdResult = popen(cmd, "r");
 
-	/* close file handle */
-	pclose(cmdResult);
+    /* process acquired data */
+    i = 0;
+    while (EOF != fscanf(cmdResult, "%s", resultLine)) {
+        /*  get fifth element in table, is file size
+         *  -rw------- 1 root root 32768 Feb 11 11:40 /sys/bus/pci/devices/0000:03:0d.0/resource0
+         */
+        if (4 == i) {
+            *byteSize = (uint32_t) strtol(resultLine, NULL, 10);
+        }
+        ++i;    // increment counter
+    }
 
-	/* finish function */
-	return 0;
+    /* close file handle */
+    pclose(cmdResult);
+
+    /* finish function */
+    return 0;
 }
 
 
@@ -213,27 +213,27 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
                    char devicePath[], uint32_t devicePathMax)
 {
 
-	/* function call message */
-	pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
+    /* function call message */
+    pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
 
-	/* find pci device */
-	if (0 != pciinfoFind(vendorID, deviceID, devicePath, devicePathMax)) {
-		pciinfoVerbosePrint(
-		    "Unable to find PCI Device with VendorID=%s and DeviceID=%s\n",
-		    vendorID, deviceID);
-		return -1;
-	}
+    /* find pci device */
+    if (0 != pciinfoFind(vendorID, deviceID, devicePath, devicePathMax)) {
+        pciinfoVerbosePrint(
+            "Unable to find PCI Device with VendorID=%s and DeviceID=%s\n",
+            vendorID, deviceID);
+        return -1;
+    }
 
-	/* build final path */
-	if ((strlen(devicePath) + 10) < devicePathMax) {
-		sprintf(devicePath, "%s%s%d", devicePath, "/resource", bar);
-	} else {
-		pciinfoVerbosePrint("To few memory allocated ...abort\n");
-		return -1;
-	}
+    /* build final path */
+    if ((strlen(devicePath) + 10) < devicePathMax) {
+        sprintf(devicePath, "%s%s%d", devicePath, "/resource", bar);
+    } else {
+        pciinfoVerbosePrint("To few memory allocated ...abort\n");
+        return -1;
+    }
 
-	/* finish function */
-	return 0;
+    /* finish function */
+    return 0;
 }
 
 
@@ -245,47 +245,47 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
 int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
                       uint32_t *barPhyAddr)
 {
-	/** used variables **/
-	char    sysPathTemp[1024] = {'\0'}; /* temporary buffer variable */
-	char    line[1023];                 /* read buffer */
-	uint8_t index;
-	FILE    *fptr;
+    /** used variables **/
+    char    sysPathTemp[1024] = {'\0'}; /* temporary buffer variable */
+    char    line[1023];                 /* read buffer */
+    uint8_t index;
+    FILE    *fptr;
 
-	/* function call message */
-	pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
-	pciinfoVerbosePrint("device: '%s'\n", sysPathPciDev);
+    /* function call message */
+    pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
+    pciinfoVerbosePrint("device: '%s'\n", sysPathPciDev);
 
-	/*  build path to bar
-	*  before: /sys/bus/pci/devices/0000:04:0d.0/
-	*  after:  /sys/bus/pci/devices/0000:04:0d.0/resource
-	*/
-	strncpy(sysPathTemp, sysPathPciDev,
-	        (sizeof(sysPathTemp) / sizeof(sysPathTemp[0])));
-	strcat(sysPathTemp, "/resource");
+    /*  build path to bar
+    *  before: /sys/bus/pci/devices/0000:04:0d.0/
+    *  after:  /sys/bus/pci/devices/0000:04:0d.0/resource
+    */
+    strncpy(sysPathTemp, sysPathPciDev,
+            (sizeof(sysPathTemp) / sizeof(sysPathTemp[0])));
+    strcat(sysPathTemp, "/resource");
 
-	/* open file handle */
-	fptr = fopen(sysPathTemp, "r");
-	if (NULL == fptr) {
-		pciinfoVerbosePrint("ERROR: failed to open '%s'.\n", sysPathTemp);
-		return -1;
-	}
+    /* open file handle */
+    fptr = fopen(sysPathTemp, "r");
+    if (NULL == fptr) {
+        pciinfoVerbosePrint("ERROR: failed to open '%s'.\n", sysPathTemp);
+        return -1;
+    }
 
-	/* iterate over all possible pci bars */
-	/* line number is the bar number */
-	for (index = 0; index < barNo; index++) {
-		if (NULL == fgets(line, sizeof(line), fptr)) {
-			pciinfoVerbosePrint("ERROR: bar %s not resent\n", barNo);
-			fclose(fptr);
-			return -1;
-		}
-	}
-	/* first column is the starting address of the bar */
-	if ( fscanf(fptr, "%x", barPhyAddr) ) {
-	}
+    /* iterate over all possible pci bars */
+    /* line number is the bar number */
+    for (index = 0; index < barNo; index++) {
+        if (NULL == fgets(line, sizeof(line), fptr)) {
+            pciinfoVerbosePrint("ERROR: bar %s not resent\n", barNo);
+            fclose(fptr);
+            return -1;
+        }
+    }
+    /* first column is the starting address of the bar */
+    if ( fscanf(fptr, "%x", barPhyAddr) ) {
+    }
 
-	/* close opened pipe */
-	fclose(fptr);
+    /* close opened pipe */
+    fclose(fptr);
 
-	/* finish function */
-	return 0;
+    /* finish function */
+    return 0;
 }
