@@ -23,7 +23,8 @@
 
 
 
-/** @brief  PCI device root dir in file system
+/** 
+ *  @brief  PCI device root dir in file system
  *
  *  looks in Linux system path for PCI devices with given VendorID and DeviceID
  *
@@ -43,23 +44,26 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
 
 
 
-/** @brief  get BAR sizes
+/** 
+ *  @brief  get BAR sizes
  *
  *  extracts sizes of PCI Bars for given PCI device
  *
- *  @param[in]  char       system path to PCI device
- *  @param[out] uint32_t   array of uint32_t with six elements, sizes of BAR in byte
- *  @return     int        state
- *  @retval     0          OK
- *  @retval     -1         FAIL
+ *  @param[in]  sysPathPciDev       system path to PCI device
+ *  @param[in]  bar       			bar number of requested bar
+ *  @param[out] byteSize   			bar size in byte
+ *  @return     int        			state
+ *  @retval     0          			OK
+ *  @retval     -1         			FAIL
  *  @since      2016-10-14
  *  @author     Andreas Kaeberlein
  */
-int pciinfoBarSize(const char sysPathPciDev[], uint32_t byteSize[]);
+int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize);
 
 
 
-/** @brief  get file-system path to BAR of PCI device
+/** 
+ *  @brief  get file-system path to BAR of PCI device
  *
  *  looks in Linux system path for PCI devices with given VendorID and DeviceID
  *
@@ -79,7 +83,8 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
 
 
 
-/** @brief  get physical bar address
+/** 
+ *  @brief  get physical bar address
  *
  *  extracts physical address of given PCI Bars
  *
@@ -97,7 +102,8 @@ int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
 
 
 
-/** @brief  set verbose level
+/** 
+ *  @brief  set verbose level
  *
  *  enabling disabling of pciinfo additional debug information
  *

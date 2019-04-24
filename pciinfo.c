@@ -138,69 +138,66 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
 
 /**
  *  pciinfoBarSize
- *  --------------
+ *		gets bar size from linux
  */
-int pciinfoBarSize(const char sysPathPciDev[], uint32_t byteSize[])
+int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize)
 {
 
 	/** used variables **/
-	char    cmd[1024], rawCmd[1024]; /* string for buffering command */
-	char    resultLine[1024];        /* command result one file line */
-	uint8_t i, j;                  /* iterator */
-	FILE    *cmdResult;            /* stored command result */
-	const uint8_t maxBarNum = 6;
+	const char	charLs[] = "ls -la ";		// build command for dir list
+	const char	charBar[] = "/resource";	// prepare acces bar file handle
+	char    	cmd[1024]; 					// string for buffering command
+	char    	resultLine[1024];   		// command result one file line
+	uint32_t 	i;               			// iterator
+	FILE    	*cmdResult;         		// stored command result
+
 
 	/* function call message */
 	pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
-	pciinfoVerbosePrint("device: '%s'\n", sysPathPciDev);
 
-	/* init bar data */
-	for (i = 0; i < maxBarNum; i++) {
-		byteSize[i] = 0;
+	/* check argument */
+	if ( bar > 5 ) {
+		pciinfoVerbosePrint("  ERROR:%s: Bar=%i exceeds max of 5\n", __FUNCTION__, bar);
+		return -1;
 	}
+
+	/* init */
+	*byteSize = 0;
+	cmd[0] = '\0';
 
 	/*  build system call request for bar size
 	 *  ls -la /sys/bus/pci/devices/0000:03:0d.0/resource*
 	 */
-	if ( (7 + strlen(sysPathPciDev) + 9 + 1 + 5) <
-	    (sizeof(rawCmd) / sizeof(rawCmd[0])) ) {
-		strcpy(rawCmd, "ls -la ");      /* 7 chars */
-		strcat(rawCmd, sysPathPciDev);
-		strcat(rawCmd, "/resource");    /* 9 chars */
+	if ( (sizeof(cmd) / sizeof(cmd[0])) >
+		 (strlen(charLs) + strlen(sysPathPciDev) + strlen(charBar) + 6 + 1)
+	) {
+		/* build command */
+		sprintf(cmd, "%s%s%s%d 2>&1", charLs, sysPathPciDev, charBar, bar);	// 2>&1 redirect stderr
+		
 	} else {
-		pciinfoVerbosePrint("To few memory allocated ...abort\n");
-		rawCmd[0] = '\0';
+		/* Not enough memory */
+		pciinfoVerbosePrint("  ERROR:%s: To less memory allocated\n", __FUNCTION__);
+		cmd[0] = '\0';
 		return -1;
 	}
 
-	/* iterate over six possible pci bars */
-	for (i = 0; i < maxBarNum; i++) {
-		/* build final command and execute*/
-		sprintf(cmd, "%s%d 2>&1", rawCmd, i);    /* 2>&1 redirect stderr */
-		cmdResult = popen(cmd, "r");
+	/* execute command */
+	cmdResult = popen(cmd, "r");
 
-		/* process acquired data */
-		j = 0;
-		while (EOF != fscanf(cmdResult, "%s", resultLine)) {
-			/*  get fifth element in table, is file size
-			 *  -rw------- 1 root root 32768 Feb 11 11:40 /sys/bus/pci/devices/0000:03:0d.0/resource0
-			 */
-			if (4 == j) {
-				byteSize[i] = (uint32_t)strtol(resultLine, NULL, 10);
-			}
-			++j;    /* increment counter */
+	/* process acquired data */
+	i = 0;
+	while (EOF != fscanf(cmdResult, "%s", resultLine)) {
+		/*  get fifth element in table, is file size
+		 *  -rw------- 1 root root 32768 Feb 11 11:40 /sys/bus/pci/devices/0000:03:0d.0/resource0
+		 */
+		if (4 == i) {
+			*byteSize = (uint32_t) strtol(resultLine, NULL, 10);
 		}
-
-		/* close file handle */
-		pclose(cmdResult);
+		++i;    // increment counter
 	}
 
-	/* print bar sizes */
-	pciinfoVerbosePrint("\tSizes:\n");
-	pciinfoVerbosePrint("\t------\n");
-	for (i = 0; i < maxBarNum; i++) {
-		pciinfoVerbosePrint("\tBAR%d:%I32u Byte\n", i, byteSize[i]);
-	}
+	/* close file handle */
+	pclose(cmdResult);
 
 	/* finish function */
 	return 0;

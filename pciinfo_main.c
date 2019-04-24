@@ -44,7 +44,7 @@ int main (int argc, char *argv[])
 	/** variables **/
 	char 		*vendorID, *deviceID;
 	char		pciSysPath[256];
-	uint32_t	barSizes[6];
+	uint32_t	barSize;
 	uint32_t	phyAdr;
 
 
@@ -98,9 +98,9 @@ int main (int argc, char *argv[])
 	
 	/* get Bar Sizes */
 	printf("PCI BAR Sizes:\n");
-	pciinfoBarSize(pciSysPath, barSizes);
 	for (uint8_t i=0; i<6; i++) {
-		printf("  BAR%i=%12i Byte\n", i, barSizes[i]);
+		pciinfoBarSize(pciSysPath, i, &barSize);
+		printf("  BAR%i=%12i Byte\n", i, barSize);
 	}
 	printf("\n");
 	
