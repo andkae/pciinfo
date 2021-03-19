@@ -1,41 +1,50 @@
-# ***********************************************************************
-# Copyright		: (c) All Rights Reserved
-# Company		: Siemens AG
-# Address		: Clemens-Winkler-Strasse 3, 09116 Chemnitz
-# Telephone		: +49 371 4750
-# 
-# @author		: Andreas Kaeberlein
-#			
-# eMail			: andreas.kaeberlein.ext@siemens.com
+# **********************************************************************
+#  @copyright	: Siemens AG
+#  @license		: GPLv3
+#  @author		: Andreas Kaeberlein
+#  @address		: Clemens-Winkler-Strasse 3, 09116 Chemnitz
 #
-# @file			: Makefile
+#  @maintainer	: Andreas Kaeberlein
+#  @telephone	: +49 371 4810-2108
+#  @email		: andreas.kaeberlein@siemens.com
 #
-# @brief		: build project
+#  @file		: Makefile
+#  @date		: 2017-01-30
 #
-# @date			: 2017-01-30
-# *********************************************************************/
+#  @brief		: Build
+#				  builds sources with all dependencies
+# **********************************************************************
 
 
 
 # select compiler
-CC=gcc
+CC = gcc
+
+# set linker
+LINKER = gcc
 
 # set compiler flags
-CFLAGS=-c -O -Wall -Wextra
+CFLAGS = -c -O -Wall -Wextra
+
+# linking flags here
+ifeq ($(origin LFLAGS), undefined)
+  LFLAGS = -Wall -Wextra -I. -lm
+endif
 
 
 all: ./bin/pciinfo_main
 
 
-./bin/pciinfo_main: ./bin/pciinfo_main.o ./bin/pciinfo.o
+./bin/pciinfo_main: ./obj/pciinfo_main.o ./obj/pciinfo.o
+	$(LINKER) ./obj/pciinfo_main.o ./obj/pciinfo.o $(LFLAGS) -o ./bin/pciinfo_main
 
 
-./bin/pciinfo_main.o: ./src/pciinfo_main.c
-	$(CC) $(CFLAGS) ./src/pciinfo_main.c -o ./bin/pciinfo_main.o
+./obj/pciinfo_main.o: ./src/pciinfo_main.c
+	$(CC) $(CFLAGS) ./src/pciinfo_main.c -o ./obj/pciinfo_main.o
 
-	
-./bin/pciinfo.o: ./src/pciinfo.c
-	$(CC) $(CFLAGS) ./src/pciinfo.c -o ./bin/pciinfo.o
+
+./obj/pciinfo.o: ./src/pciinfo.c
+	$(CC) $(CFLAGS) ./src/pciinfo.c -o ./obj/pciinfo.o
 
 clean:
-	rm ./bin/*o ./bin/pciinfo_main
+	rm -f ./obj/*o ./bin/pciinfo_main
