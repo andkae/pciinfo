@@ -1,18 +1,18 @@
 /***********************************************************************
- Copyright      : (c) All Rights Reserved
- Company        : Siemens AG
- Address        : Clemens-Winkler-Strasse 3, 09116 Chemnitz
- Telephone      : +49 371 4750
-
+ @copyright     : Siemens AG
+ @license       : GPLv3
  @author        : Andreas Kaeberlein
+ @address       : Clemens-Winkler-Strasse 3, 09116 Chemnitz
 
- eMail          : andreas.kaeberlein.ext@siemens.com
+ @maintainer    : Andreas Kaeberlein
+ @telephone     : +49 371 4810-2108
+ @email         : andreas.kaeberlein@siemens.com
 
- @file          : pciInfoCmdline.c
-
- @brief         : provides comand line interface for pciinfo.h library
-
+ @file          : pciinfo_main.c
  @date          : 2017-01-30
+
+ @brief         : pciinfo CLI
+                  provides comand line interface for pciinfo.h library
 ***********************************************************************/
 
 

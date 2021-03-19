@@ -1,25 +1,28 @@
-/******************************************************************************
- @Copyright          : (c) All Rights Reserved
-   Company           : Siemens AG
-   Address           : Clemens-Winkler-Strasse 3, 09116 Chemnitz
-   Telephone         : +49 371 4750
+/***********************************************************************
+ @copyright     : Siemens AG
+ @license       : GPLv3
+ @author        : Andreas Kaeberlein
+ @address       : Clemens-Winkler-Strasse 3, 09116 Chemnitz
 
- @Author             : Kaeberlein, Andreas <andreas.kaeberlein.ext@siemens.com>
- @Date               : 2017-01-30 08:51:15
- @File               : pciinfo.h
- @Version            :
- @Brief              : function to get infos about pci devices
- @Last Modified by   : z003su8e
- @Last Modified time : 2018-08-15 11:50:23
-*******************************************************************************/
+ @maintainer    : Andreas Kaeberlein
+ @telephone     : +49 371 4810-2108
+ @email         : andreas.kaeberlein@siemens.com
+
+ @file          : pciinfo.h
+ @date          : 2017-01-30
+
+ @brief         : pci device into
+                  function to acquire information about PCI devices
+                  from the linux
+***********************************************************************/
 
 
 
 //--------------------------------------------------------------
 // Define Guard
 //--------------------------------------------------------------
-#ifndef __PCI_PCIINFO
-#define __PCI_PCIINFO
+#ifndef __PCIINFO_H
+#define __PCIINFO_H
 
 
 
@@ -116,4 +119,4 @@ int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
 void pciinfoSetVerboseLevel(uint8_t level);
 
 //--------------------------------------------------------------
-#endif // __PCI_PCIINFO
+#endif // __PCIINFO_H
