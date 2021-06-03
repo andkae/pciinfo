@@ -24,7 +24,9 @@ CC = gcc
 LINKER = gcc
 
 # set compiler flags
-CFLAGS = -c -O -Wall -Wextra
+ifeq ($(origin CFLAGS), undefined)
+  CFLAGS = -c -O -Wall -Wextra
+endif
 
 # linking flags here
 ifeq ($(origin LFLAGS), undefined)
@@ -32,19 +34,19 @@ ifeq ($(origin LFLAGS), undefined)
 endif
 
 
-all: ./bin/pciinfo_main
+all: pciinfo_main
 
-
-./bin/pciinfo_main: ./obj/pciinfo_main.o ./obj/pciinfo.o
+pciinfo_main: pciinfo_main.o pciinfo.o
 	$(LINKER) ./obj/pciinfo_main.o ./obj/pciinfo.o $(LFLAGS) -o ./bin/pciinfo_main
 
-
-./obj/pciinfo_main.o: ./src/pciinfo_main.c
+pciinfo_main.o: ./src/pciinfo_main.c
 	$(CC) $(CFLAGS) ./src/pciinfo_main.c -o ./obj/pciinfo_main.o
 
-
-./obj/pciinfo.o: ./src/pciinfo.c
+pciinfo.o: ./src/pciinfo.c
 	$(CC) $(CFLAGS) ./src/pciinfo.c -o ./obj/pciinfo.o
+
+ci: ./src/pciinfo.c
+	$(CC) $(CFLAGS) -Werror ./src/pciinfo.c -o ./obj/pciinfo.o
 
 clean:
 	rm -f ./obj/*o ./bin/pciinfo_main
