@@ -173,18 +173,11 @@ int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize)
     /*  build system call request for bar size
      *  ls -la /sys/bus/pci/devices/0000:03:0d.0/resource*
      */
-    if ( (sizeof(cmd) / sizeof(cmd[0])) >
-         (strlen(charLs) + strlen(sysPathPciDev) + strlen(charBar) + 6 + 1)
-    ) {
-        /* build command */
-        sprintf(cmd, "%s%s%s%d 2>&1", charLs, sysPathPciDev, charBar, bar); // 2>&1 redirect stderr
-
-    } else {
-        /* Not enough memory */
-        pciinfoVerbosePrint("  ERROR:%s: To less memory allocated\n", __FUNCTION__);
-        cmd[0] = '\0';
-        return -1;
-    }
+    snprintf (  cmd,
+                (size_t) sizeof(cmd) / sizeof(cmd[0]),
+                "%s%s%s%d 2>&1",
+                charLs, sysPathPciDev, charBar, bar
+             );
 
     /* execute command */
     cmdResult = popen(cmd, "r");
@@ -230,12 +223,8 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
     }
 
     /* build final path */
-    if ((strlen(devicePath) + 10) < devicePathMax) {
-        sprintf(devicePath, "%s%s%d", devicePath, "/resource", bar);
-    } else {
-        pciinfoVerbosePrint("To few memory allocated ...abort\n");
-        return -1;
-    }
+    devicePath[0] = '\0';
+    snprintf(devicePath, (size_t) devicePathMax, "%s%s%d", devicePath, "/resource", bar);
 
     /* finish function */
     return 0;
