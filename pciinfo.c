@@ -210,6 +210,9 @@ int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize)
 int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
                    char devicePath[], uint32_t devicePathMax)
 {
+    /** used variables **/
+    char *devicePath_in = devicePath;   // fix warning: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84919
+
 
     /* function call message */
     pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
@@ -224,7 +227,7 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
 
     /* build final path */
     devicePath[0] = '\0';
-    snprintf(devicePath, (size_t) devicePathMax, "%s%s%d", devicePath, "/resource", bar);
+    snprintf(devicePath, (size_t) devicePathMax, "%s%s%d", devicePath_in, "/resource", bar);
 
     /* finish function */
     return 0;
