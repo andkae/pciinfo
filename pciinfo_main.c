@@ -75,7 +75,7 @@ int main (int argc, char *argv[])
     deviceID    = argv[2];
 
     /* acquire system path */
-    if ( pciinfoFind(vendorID, deviceID, pciSysPath, sizeof(pciSysPath)/sizeof(pciSysPath[0])) != 0 ) {
+    if ( 0 != pciinfoFind(vendorID, deviceID, pciSysPath, sizeof(pciSysPath)/sizeof(pciSysPath[0])) ) {
         printf("ERROR:pciinfo_main:main: Failed to find device with vid=%s and did=%s\n", vendorID, deviceID);
         exit(EXIT_FAILURE);
     }
@@ -101,6 +101,18 @@ int main (int argc, char *argv[])
     for (uint8_t i=0; i<6; i++) {
         pciinfoBarSize(pciSysPath, i, &barSize);
         printf("  BAR%i=%12i Byte\n", i, barSize);
+    }
+    printf("\n");
+
+
+    /* acquire bar path */
+    printf("Bar Paths:\n");
+    for (uint8_t i=0; i<6; i++) {
+        if ( 0 == pciinfoBarPath(vendorID, deviceID, i, pciSysPath, sizeof(pciSysPath)/sizeof(pciSysPath[0])) ) {
+            printf("  BAR%i: '%s'\n", i, pciSysPath);
+        } else {
+            printf("  BAR%i: not defined\n", i);
+        }
     }
     printf("\n");
 

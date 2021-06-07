@@ -211,7 +211,7 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
                    char devicePath[], uint32_t devicePathMax)
 {
     /** used variables **/
-    char *devicePath_in = devicePath;   // fix warning: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84919
+    char charBar[5];
 
 
     /* function call message */
@@ -220,14 +220,28 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
     /* find pci device */
     devicePath[0] = '\0';
     if (0 != pciinfoFind(vendorID, deviceID, devicePath, devicePathMax)) {
-        pciinfoVerbosePrint(
-            "Unable to find PCI Device with VendorID=%s and DeviceID=%s\n",
-            vendorID, deviceID);
+        pciinfoVerbosePrint(  "  ERROR:%s: Unable to find PCI Device with VendorID=%s and DeviceID=%s\n",
+                              __FUNCTION__, vendorID, deviceID
+                           );
         return -1;
     }
 
     /* build final path */
-    snprintf(devicePath, (size_t) devicePathMax, "%s%s%d", devicePath_in, "/resource", bar);
+    charBar[0] = '\0';
+    sprintf(charBar, "%d", bar);
+    strncat(devicePath, "/resource", (size_t) devicePathMax);
+    strncat(devicePath, charBar, (size_t) devicePathMax);
+
+    /*  check if exist
+     *  SRC: https://stackoverflow.com/questions/230062/whats-the-best-way-to-check-if-a-file-exists-in-c
+     */
+    if ( access(devicePath, F_OK ) ) {
+        pciinfoVerbosePrint(  "  ERROR:%s: File '%s' not found\n",
+                              __FUNCTION__, devicePath
+                           );
+        devicePath[0] = '\0';   // make invalid
+        return -1;              // failed
+    }
 
     /* finish function */
     return 0;
