@@ -25,7 +25,7 @@ LINKER = gcc
 
 # set compiler flags
 ifeq ($(origin CFLAGS), undefined)
-  CFLAGS = -c -O -Wall -Wextra
+  CFLAGS = -c -O -Wall -Wextra -Wconversion
 endif
 
 # linking flags here
