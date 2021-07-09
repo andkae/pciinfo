@@ -229,8 +229,8 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
     /* build final path */
     charBar[0] = '\0';
     sprintf(charBar, "%d", bar);
-    strncat(devicePath, "/resource", (size_t) devicePathMax);
-    strncat(devicePath, charBar, (size_t) devicePathMax);
+    strncat(devicePath, "/resource", (size_t) devicePathMax-1);
+    strncat(devicePath, charBar, (size_t) devicePathMax-1);
 
     /*  check if exist
      *  SRC: https://stackoverflow.com/questions/230062/whats-the-best-way-to-check-if-a-file-exists-in-c
