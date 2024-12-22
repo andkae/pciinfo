@@ -25,7 +25,7 @@ LINKER = gcc
 
 # set compiler flags
 ifeq ($(origin CFLAGS), undefined)
-  CFLAGS = -c -O -Wall -Wextra -Wconversion
+  CFLAGS = -c -O -Wall -Wextra -Wimplicit -Wconversion -I .
 endif
 
 # linking flags here
@@ -37,16 +37,16 @@ endif
 all: pciinfo_main
 
 pciinfo_main: pciinfo_main.o pciinfo.o
-	$(LINKER) ./obj/pciinfo_main.o ./obj/pciinfo.o $(LFLAGS) -o ./bin/pciinfo_main
+	$(LINKER) ./bin/pciinfo_main.o ./bin/pciinfo.o $(LFLAGS) -o ./bin/pciinfo_main
 
-pciinfo_main.o: ./src/pciinfo_main.c
-	$(CC) $(CFLAGS) ./src/pciinfo_main.c -o ./obj/pciinfo_main.o
+pciinfo_main.o: ./pciinfo_main.c
+	$(CC) $(CFLAGS) ./pciinfo_main.c -o ./bin/pciinfo_main.o
 
-pciinfo.o: ./src/pciinfo.c
-	$(CC) $(CFLAGS) ./src/pciinfo.c -o ./obj/pciinfo.o
+pciinfo.o: ./pciinfo.c
+	$(CC) $(CFLAGS) ./pciinfo.c -o ./bin/pciinfo.o
 
-ci: ./src/pciinfo.c
-	$(CC) $(CFLAGS) -Werror ./src/pciinfo.c -o ./obj/pciinfo.o
+ci: ./pciinfo.c
+	$(CC) $(CFLAGS) -Werror ./pciinfo.c -o ./bin/pciinfo.o
 
 clean:
-	rm -f ./obj/*o ./bin/pciinfo_main
+	rm -f ./bin/*.o ./bin/pciinfo_main
