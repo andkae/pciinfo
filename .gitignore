@@ -1,0 +1,22 @@
+# GCC
+#
+/**/*.o
+/**/*.bin
+/**/*.S
+/**/*.hex
+/**/*.elf
+/**/*.asm
+/**/*.c.o
+#
+
+
+# Executable
+/bin/**
+#
+
+
+# MS Visio Code
+#
+/build/**
+/.vscode/**
+#
