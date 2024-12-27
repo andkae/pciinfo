@@ -12,7 +12,7 @@
  @date          : 2017-01-30
  @see           : https://github.com/andkae/pciinfo
 
- @brief         : pci device into
+ @brief         : pci device file search
                   function to acquire information about PCI devices
                   from the linux
 ***********************************************************************/
@@ -21,15 +21,12 @@
 
 /** Includes **/
 /* Standard libs */
-#include <stdarg.h>   /* variable parameter lists */
 #include <stdint.h>   /* defines fixed data types, like int8_t... */
-#include <stdio.h>    /* e.g. printf */
-#include <stdlib.h>   /* defines four variables, several macros, and various
-                       * functions for performing general operations */
+#include <stdio.h>    /* e.g. snprintf */
+#include <stdlib.h>   /* defines functions for performing general operations, f.e.
+                       * strtol */
 #include <string.h>   /* string handling functions */
 #include <strings.h>  /* for function strcasecmp */
-#include <unistd.h>   /* system call wrapper functions such as fork, pipe
-                       * and I/O primitives (read, write, close, etc.) */
 
 /* User libs */
 #include "pciinfo.h"  /* function prototypes */
@@ -194,7 +191,8 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
                    char devicePath[], uint32_t devicePathMax)
 {
     /** used variables **/
-    char charBar[5];
+    char    charBar[5];
+    FILE    *fptr;      // pointer to file
 
 
     /* function call message */
@@ -215,16 +213,16 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
     strncat(devicePath, "/resource", (size_t) devicePathMax-1);
     strncat(devicePath, charBar, (size_t) devicePathMax-1);
 
-    /*  check if exist
-     *  SRC: https://stackoverflow.com/questions/230062/whats-the-best-way-to-check-if-a-file-exists-in-c
-     */
-    if ( access(devicePath, F_OK ) ) {
+    /*  check if file could be open */
+    fptr = fopen(devicePath, "r");
+    if (NULL == fptr) {
         pciinfo_printf  (  "  ERROR:%s: File '%s' not found\n",
                            __FUNCTION__, devicePath
                         );
         devicePath[0] = '\0';   // make invalid
         return -1;              // failed
     }
+    fclose(fptr);   // close
 
     /* finish function */
     return 0;
