@@ -46,7 +46,7 @@ pciinfo.o: ./pciinfo.c
 	$(CC) $(CFLAGS) ./pciinfo.c -o ./bin/pciinfo.o
 
 ci: ./pciinfo.c
-	$(CC) $(CFLAGS) -Werror ./pciinfo.c -o ./bin/pciinfo.o
+	$(CC) $(CFLAGS) -Werror -DPCIINFO_PRINTF_EN ./pciinfo.c -o ./bin/pciinfo.o
 
 clean:
 	rm -f ./bin/*.o ./bin/pciinfo_main

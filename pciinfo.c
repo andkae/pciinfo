@@ -10,6 +10,7 @@
 
  @file          : pciinfo.c
  @date          : 2017-01-30
+ @see           : https://github.com/andkae/pciinfo
 
  @brief         : pci device into
                   function to acquire information about PCI devices
@@ -35,44 +36,26 @@
 
 
 
-/** globals **/
-static uint8_t uint8pciinfoVerboseLevel = 0;
-
-
-
 /**
- *  pciinfoVerbosePrint
- *  -------------------
+ *  @defgroup PCIINFO_PRINTF_EN
+ *
+ *  redirect pciinfo_printf to printf
+ *
+ *  @{
  */
-static void pciinfoVerbosePrint(const char *template, ...)
-{
-    /** variables **/
-    va_list ap;
-
-    /* switch print off */
-    if (0 != uint8pciinfoVerboseLevel) {
-        va_start(ap, template);
-        vprintf(template, ap);
-        va_end(ap);
-    }
-}
-
-
-
-/**
- *  setVerboseLevel
- *  ---------------
- */
-void pciinfoSetVerboseLevel(uint8_t level)
-{
-    uint8pciinfoVerboseLevel = level;
-}
+#ifdef PCIINFO_PRINTF_EN
+    #include <stdio.h>  // allow outputs in unit test
+    #define pciinfo_printf(...) printf(__VA_ARGS__)
+#else
+    #define pciinfo_printf(...)
+#endif
+/** @} */   // DEBUG
 
 
 
 /**
  *  pciinfoFind
- *  -----------
+ *    finds linux system path based on provided vendor and device id
  */
 int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
                 uint32_t devicePathMax)
@@ -87,7 +70,7 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
     FILE     *foundDevice;
 
     /* function call message */
-    pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
+    pciinfo_printf("__FUNCTION__ = %s\n", __FUNCTION__);
 
     /* search in system path for pci devices*/
     strcpy(cmd, "grep -irnw /sys/bus/pci/devices/*/vendor -e ");
@@ -106,7 +89,7 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
             uint16DevPathIdx = (uint16_t)(strstr(line1, "/vendor") - line1);
         } else {
             uint16DevPathIdx = 0;
-            pciinfoVerbosePrint("Not enough memory to store PCI device path...\n");
+            pciinfo_printf("Not enough memory to store PCI device path...\n");
         }
         strncpy(devPath, line1, uint16DevPathIdx);
         devPath[uint16DevPathIdx] = '\0';    /* termination character */
@@ -125,7 +108,7 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
         if (0 == strcasecmp(line2, deviceID)) {
             ++uint8FoundDevice;    /* increment match counter */
             strncpy(devicePath, devPath, devicePathMax);
-            pciinfoVerbosePrint("vendor=%s/device=%s in '%s'\n", vendorID, line2, devPath);
+            pciinfo_printf("vendor=%s/device=%s in '%s'\n", vendorID, line2, devPath);
         }
 
         /* close opened pipe */
@@ -158,11 +141,11 @@ int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize)
 
 
     /* function call message */
-    pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
+    pciinfo_printf("__FUNCTION__ = %s\n", __FUNCTION__);
 
     /* check argument */
     if ( bar > 5 ) {
-        pciinfoVerbosePrint("  ERROR:%s: Bar=%i exceeds max of 5\n", __FUNCTION__, bar);
+        pciinfo_printf("  ERROR:%s: Bar=%i exceeds max of 5\n", __FUNCTION__, bar);
         return -1;
     }
 
@@ -215,14 +198,14 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
 
 
     /* function call message */
-    pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
+    pciinfo_printf("__FUNCTION__ = %s\n", __FUNCTION__);
 
     /* find pci device */
     devicePath[0] = '\0';
     if (0 != pciinfoFind(vendorID, deviceID, devicePath, devicePathMax)) {
-        pciinfoVerbosePrint(  "  ERROR:%s: Unable to find PCI Device with VendorID=%s and DeviceID=%s\n",
-                              __FUNCTION__, vendorID, deviceID
-                           );
+        pciinfo_printf  (   "  ERROR:%s: Unable to find PCI Device with VendorID=%s and DeviceID=%s\n",
+                            __FUNCTION__, vendorID, deviceID
+                        );
         return -1;
     }
 
@@ -236,9 +219,9 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
      *  SRC: https://stackoverflow.com/questions/230062/whats-the-best-way-to-check-if-a-file-exists-in-c
      */
     if ( access(devicePath, F_OK ) ) {
-        pciinfoVerbosePrint(  "  ERROR:%s: File '%s' not found\n",
-                              __FUNCTION__, devicePath
-                           );
+        pciinfo_printf  (  "  ERROR:%s: File '%s' not found\n",
+                           __FUNCTION__, devicePath
+                        );
         devicePath[0] = '\0';   // make invalid
         return -1;              // failed
     }
@@ -263,8 +246,8 @@ int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
     FILE    *fptr;
 
     /* function call message */
-    pciinfoVerbosePrint("__FUNCTION__ = %s\n", __FUNCTION__);
-    pciinfoVerbosePrint("device: '%s'\n", sysPathPciDev);
+    pciinfo_printf("__FUNCTION__ = %s\n", __FUNCTION__);
+    pciinfo_printf("device: '%s'\n", sysPathPciDev);
 
     /*  build path to bar
     *  before: /sys/bus/pci/devices/0000:04:0d.0/
@@ -277,7 +260,7 @@ int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
     /* open file handle */
     fptr = fopen(sysPathTemp, "r");
     if (NULL == fptr) {
-        pciinfoVerbosePrint("ERROR: failed to open '%s'.\n", sysPathTemp);
+        pciinfo_printf("ERROR: failed to open '%s'.\n", sysPathTemp);
         return -1;
     }
 
@@ -285,7 +268,7 @@ int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
     /* line number is the bar number */
     for (index = 0; index < barNo; index++) {
         if (NULL == fgets(line, sizeof(line), fptr)) {
-            pciinfoVerbosePrint("ERROR: bar %s not resent\n", barNo);
+            pciinfo_printf("ERROR: bar %i not resent\n", barNo);
             fclose(fptr);
             return -1;
         }

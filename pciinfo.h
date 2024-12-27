@@ -10,6 +10,7 @@
 
  @file          : pciinfo.h
  @date          : 2017-01-30
+ @see           : https://github.com/andkae/pciinfo
 
  @brief         : pci device into
                   function to acquire information about PCI devices
@@ -102,21 +103,6 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
  */
 int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
                       uint32_t *barPhyAddr);
-
-
-
-/**
- *  @brief  set verbose level
- *
- *  enabling disabling of pciinfo additional debug information
- *
- *  @param[in]  uint8_t   PCI device vendor
- *  @return     int       state
- *  @retval     0         OK
- *  @since      2018-05-25
- *  @author     Andreas Kaeberlein
- */
-void pciinfoSetVerboseLevel(uint8_t level);
 
 //--------------------------------------------------------------
 #endif // __PCIINFO_H
