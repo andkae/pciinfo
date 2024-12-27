@@ -7,16 +7,34 @@ C library to extract the Linux system filehandle paths of PCI device BARs based
 on vendor and device id.
 
 
-## File listing
- 
- | File                              | Remark                  |
- | --------------------------------- | ----------------------- |
- | [pciinfo.c](/pciinfo.c)           | library implementation  |
- | [pciinfo.h](/pciinfo.h)           | library header          |
- | [pciinfo_main.c](/pciinfo_main.c) | tests library functions |
+## How-to
+
+### Clone
+```bash
+git clone https://github.com/andkae/pciinfo.git
+```
 
 
-## Functions
+### Build
+The [Makefile](/Makefile) builds the repository:
+```bash
+$ make
+gcc -c -O -Wall -Wextra -Wimplicit -Wconversion -I . ./pciinfo_main.c -o ./bin/pciinfo_main.o
+gcc -c -O -Wall -Wextra -Wimplicit -Wconversion -I . ./pciinfo.c -o ./bin/pciinfo.o
+gcc ./bin/pciinfo_main.o ./bin/pciinfo.o -Wall -Wextra -I. -lm -o ./bin/pciinfo_main
+```
+
+The library part itself can be built with:
+```bash
+gcc -c -O -Wall -Wextra -Wimplicit -Wconversion -I . ./pciinfo.c -o ./bin/pciinfo.o
+```
+
+
+### Enable Debug Output
+To enable the debug ```printf``` add the compile switch ```-DPCIINFO_PRINTF_EN``` to the gcc call.
+
+
+## [API](/pciinfo.h)
 
 ### pciinfoFind
 Finds the PCI device memory mapped file paths based on a given
@@ -50,10 +68,3 @@ Gets the PCI bar assigned physical addresses.
 int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo, uint32_t *barPhyAddr);
 ```
 
-
-### pciinfoSetVerboseLevel
-Set level of debug messages.
-
-```c
-void pciinfoSetVerboseLevel(uint8_t level);
-```
