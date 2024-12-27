@@ -12,7 +12,7 @@
  @date          : 2017-01-30
  @see           : https://github.com/andkae/pciinfo
 
- @brief         : pci device into
+ @brief         : pci device file search
                   function to acquire information about PCI devices
                   from the linux
 ***********************************************************************/
