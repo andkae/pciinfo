@@ -1,11 +1,10 @@
 [![Test](https://github.com/andkae/pciinfo/actions/workflows/test.yml/badge.svg)](https://github.com/andkae/pciinfo/actions/workflows/test.yml)
+[![doxygen](https://github.com/andkae/pciinfo/actions/workflows/doxygen.yml/badge.svg)](https://github.com/andkae/pciinfo/actions/workflows/doxygen.yml)
 
 
 # pciinfo
 C library to extract the Linux system filehandle paths of PCI device BARs based
 on vendor and device id.
-
-## Table of contents
 
 
 ## File listing
