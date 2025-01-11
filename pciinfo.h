@@ -49,6 +49,21 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
 
 
 /**
+ *  @brief  BAR Existent?
+ *
+ *  Checik which of the 6 possible PCI BARs are existent
+ *
+ *  @param[in]  sysPathPciDev       system path to PCI device
+ *  @return     int         		PCI BAR existance
+ *  @retval     (1<<i)           	Bit index (i) assigns to PCI BAR, if true bar is existent
+ *  @since      2025-11-01
+ *  @author     Andreas Kaeberlein
+ */
+int pciinfoBarExist(const char sysPathPciDev[]);
+
+
+
+/**
  *  @brief  get BAR sizes
  *
  *  extracts sizes of PCI Bars for given PCI device

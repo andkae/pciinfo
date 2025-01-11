@@ -122,6 +122,51 @@ int pciinfoFind(const char vendorID[], const char deviceID[], char devicePath[],
 
 
 /**
+ *  pciinfoBarExist
+ *    check if bar is present
+ */
+int pciinfoBarExist(const char sysPathPciDev[])
+{
+    /** variables **/
+    int     intRet = 0;         // bit index indicates bar present y/n
+    char    charCmd[2048];      // string for buffering command
+    char    charResult[1024];   // command result one file line
+    FILE    *cmdResult;         // stored command result
+
+
+    /* function call message */
+    pciinfo_printf("__FUNCTION__ = %s\n", __FUNCTION__);
+
+    /* iterate over 6 possible bars */
+    for ( uint8_t i = 0; i < 6; i++ ) {
+        /*
+         *  build system call request for bar size
+         *    ls /sys/bus/pci/devices/0000:03:0d.0/resource*
+         */
+        snprintf(charCmd, sizeof(charCmd), "ls %s/resource%d 2>/dev/null", sysPathPciDev, i);
+        /* help message */
+        pciinfo_printf("  INFO:%s:BAR%d:CMD: %s\n", __FUNCTION__, i, charCmd);
+        /* execute command */
+        cmdResult = popen(charCmd, "r");
+        /* parse result */
+        while (EOF != fscanf(cmdResult, "%s", charResult)) {
+            /* debug */
+            pciinfo_printf("  INFO:%s:BAR%d:RST: %s\n", __FUNCTION__, i, charResult);
+            /* check length */
+            if ( 0 < strlen(charResult) ) {
+                intRet |= (int) (1<<i);     // bar is present
+            }
+        }
+        /* close file handle */
+        pclose(cmdResult);
+    }
+    /* return */
+    return intRet;
+}
+
+
+
+/**
  *  pciinfoBarSize
  *      gets bar size from linux
  */
