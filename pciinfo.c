@@ -294,7 +294,7 @@ int pciinfoBarPhyAdr(const char sysPathPciDev[], uint8_t barNo,
 
     /* check for enough memory */
     if ( (strlen(sysPathPciDev) + 10) > sizeof(sysPathTemp) ) {
-        pciinfo_printf("  ERROR:%s: Not enough memory\n", __FUNCTION__, sysPathPciDev);
+        pciinfo_printf("  ERROR:%s: Not enough memory\n", __FUNCTION__);
         return -1;
     }
 
