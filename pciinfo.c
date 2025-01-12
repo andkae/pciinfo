@@ -151,7 +151,7 @@ int pciinfoBarExist(const char sysPathPciDev[])
         /* parse result */
         while (EOF != fscanf(cmdResult, "%s", charResult)) {
             /* debug */
-            pciinfo_printf("  INFO:%s:BAR%d:RST: %s\n", __FUNCTION__, i, charResult);
+            pciinfo_printf("  INFO:%s:BAR%d:RESULT: %s\n", __FUNCTION__, i, charResult);
             /* check length */
             if ( 0 < strlen(charResult) ) {
                 intRet |= (int) (1<<i);     // bar is present
@@ -276,10 +276,10 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
 
 
 /**
- *  pciinfoBarPhyAddr
- *  -----------------
+ *  pciinfoBarPhyAdr
+ *    get physical address of PCI bar
  */
-int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
+int pciinfoBarPhyAdr(const char sysPathPciDev[], uint8_t barNo,
                       uint32_t *barPhyAddr)
 {
     /** used variables **/
@@ -290,20 +290,25 @@ int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
 
     /* function call message */
     pciinfo_printf("__FUNCTION__ = %s\n", __FUNCTION__);
-    pciinfo_printf("device: '%s'\n", sysPathPciDev);
+    pciinfo_printf("  INFO:%s:DEVICE: '%s'.\n", __FUNCTION__, sysPathPciDev);
+
+    /* check for enough memory */
+    if ( (strlen(sysPathPciDev) + 10) > sizeof(sysPathTemp) ) {
+        pciinfo_printf("  ERROR:%s: Not enough memory\n", __FUNCTION__, sysPathPciDev);
+        return -1;
+    }
 
     /*  build path to bar
     *  before: /sys/bus/pci/devices/0000:04:0d.0/
     *  after:  /sys/bus/pci/devices/0000:04:0d.0/resource
     */
-    strncpy(sysPathTemp, sysPathPciDev,
-            (sizeof(sysPathTemp) / sizeof(sysPathTemp[0])));
-    strcat(sysPathTemp, "/resource");
+    strncpy(sysPathTemp, sysPathPciDev, sizeof(sysPathTemp));
+    strncat(sysPathTemp, "/resource",  sizeof(sysPathTemp)-1);
 
     /* open file handle */
     fptr = fopen(sysPathTemp, "r");
     if (NULL == fptr) {
-        pciinfo_printf("ERROR: failed to open '%s'.\n", sysPathTemp);
+        pciinfo_printf("  ERROR:%s: failed to open '%s'.\n", __FUNCTION__, sysPathTemp);
         return -1;
     }
 
@@ -311,7 +316,7 @@ int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
     /* line number is the bar number */
     for (index = 0; index < barNo; index++) {
         if (NULL == fgets(line, sizeof(line), fptr)) {
-            pciinfo_printf("ERROR: bar %i not resent\n", barNo);
+            pciinfo_printf("  ERROR:%s: bar %i not resent\n", __FUNCTION__, barNo);
             fclose(fptr);
             return -1;
         }

@@ -116,7 +116,7 @@ int pciinfoBarPath(const char vendorID[], const char deviceID[], uint8_t bar,
  *  @since      2017-05-08
  *  @author     Kartik Desai
  */
-int pciinfoBarPhyAddr(const char sysPathPciDev[], uint8_t barNo,
+int pciinfoBarPhyAdr(const char sysPathPciDev[], uint8_t barNo,
                       uint32_t *barPhyAddr);
 
 //--------------------------------------------------------------
