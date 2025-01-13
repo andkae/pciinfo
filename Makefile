@@ -34,10 +34,10 @@ ifeq ($(origin LFLAGS), undefined)
 endif
 
 
-all: pciinfo_main
+all: pciinfo
 
-pciinfo_main: pciinfo_main.o pciinfo.o
-	$(LINKER) ./bin/pciinfo_main.o ./bin/pciinfo.o $(LFLAGS) -o ./bin/pciinfo_main
+pciinfo: pciinfo_main.o pciinfo.o
+	$(LINKER) ./bin/pciinfo_main.o ./bin/pciinfo.o $(LFLAGS) -o ./bin/pciinfo
 
 pciinfo_main.o: ./pciinfo_main.c
 	$(CC) $(CFLAGS) ./pciinfo_main.c -o ./bin/pciinfo_main.o
@@ -49,4 +49,4 @@ ci: ./pciinfo.c
 	$(CC) $(CFLAGS) -Werror -DPCIINFO_PRINTF_EN ./pciinfo.c -o ./bin/pciinfo.o
 
 clean:
-	rm -f ./bin/*.o ./bin/pciinfo_main
+	rm -f ./bin/*.o ./bin/pciinfo
