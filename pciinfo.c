@@ -168,15 +168,13 @@ int pciinfoBarExist(const char sysPathPciDev[])
 
 /**
  *  pciinfoBarSize
- *      gets bar size from linux
+ *    gets bar size from linux
  */
 int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize)
 {
 
     /** used variables **/
-    const char  charLs[] = "ls -la ";       // build command for dir list
-    const char  charBar[] = "/resource";    // prepare acces bar file handle
-    char        cmd[1024];                  // string for buffering command
+    char        charCmd[1024];              // string for buffering command
     char        resultLine[1024];           // command result one file line
     uint32_t    i;                          // iterator
     FILE        *cmdResult;                 // stored command result
@@ -193,19 +191,15 @@ int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize)
 
     /* init */
     *byteSize = 0;
-    cmd[0] = '\0';
+    charCmd[0] = '\0';
 
     /*  build system call request for bar size
      *  ls -la /sys/bus/pci/devices/0000:03:0d.0/resource*
      */
-    snprintf (  cmd,
-                (size_t) sizeof(cmd) / sizeof(cmd[0]),
-                "%s%s%s%d 2>&1",
-                charLs, sysPathPciDev, charBar, bar
-             );
+    snprintf(charCmd, sizeof(charCmd), "ls -la %s/resource%d 2>/dev/null", sysPathPciDev, bar);
 
     /* execute command */
-    cmdResult = popen(cmd, "r");
+    cmdResult = popen(charCmd, "r");
 
     /* process acquired data */
     i = 0;
@@ -215,6 +209,7 @@ int pciinfoBarSize(const char sysPathPciDev[], uint8_t bar, uint32_t *byteSize)
          */
         if (4 == i) {
             *byteSize = (uint32_t) strtol(resultLine, NULL, 10);
+            break;  // no further processing of string required after size extaction
         }
         ++i;    // increment counter
     }
