@@ -75,12 +75,12 @@ void help( char prog[] )
     printf("\n");
     printf("Options:\n");
     printf("  -h, --help                 show help\n");
-    printf("  -v, --vid=[%-6s]         Vendor ID of PCI device to discover\n", DEF_SET_VID);
-    printf("  -d, --did=[%-6s]         Device ID of PCI device to discover\n", DEF_SET_DID);
+    printf("  -v, --vid={%-6s}         Vendor ID of PCI device to discover\n", DEF_SET_VID);
+    printf("  -d, --did={%-6s}         Device ID of PCI device to discover\n", DEF_SET_DID);
     printf("  -p, --path                 List path to PCI device file handle\n");
     printf("  -e, --exist                List existing PCI BARs\n");
-    printf("  -a, --adr                  List physical BAR adresses of existing BARs\n");
-    printf("  -s, --size                 List BAR sizes\n");
+    printf("  -a, --adr=[<barNum>]       List physical BAR adresses of existing BARs, or for a single BAR\n");
+    printf("  -s, --size=[<barNum>]      List BAR sizes for all or a single BAR\n");
     printf("  -b, --bus                  Get PCI bus and function\n");
     printf("      --brief                output in shell evaluable format\n");
     printf("      --verbose              advanced outputs\n");
