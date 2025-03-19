@@ -59,6 +59,43 @@
 
 
 /**
+ *  help
+ */
+void help( char prog[] )
+{
+    /* clear screen */
+    if ( system("clear") ) {};
+
+    /* help dialog */
+    printf("\n");
+    printf("pciinfo - CLI tool to discover the linux PCI device path based on vendor/device id\n");
+    printf("\n");
+    printf("Usage:\n");
+    printf("  %s --options... \n", prog);
+    printf("\n");
+    printf("Options:\n");
+    printf("  -h, --help                 show help\n");
+    printf("  -v, --vid=[%-6s]         Vendor ID of PCI device to discover\n", DEF_SET_VID);
+    printf("  -d, --did=[%-6s]         Device ID of PCI device to discover\n", DEF_SET_DID);
+    printf("  -p, --path                 List path to PCI device file handle\n");
+    printf("  -e, --exist                List existing PCI BARs\n");
+    printf("  -a, --adr                  List physical BAR adresses of existing BARs\n");
+    printf("  -s, --size                 List BAR sizes\n");
+    printf("  -b, --bus                  Get PCI bus and function\n");
+    printf("      --brief                output in shell evaluable format\n");
+    printf("      --verbose              advanced outputs\n");
+    printf("\n\n");
+    printf("Authors:\n");
+    printf("  Andreas Kaeberlein         andreas.kaeberlein@siemens.com\n");
+    printf("\n\n");
+    printf("Contribute:\n");
+    printf("  https://github.com/andkae/pciinfo\n");
+    printf("\n\n");
+}
+
+
+
+/**
  *  @brief touppers
  *
  *  Converts string from lower to uppercase
@@ -119,7 +156,7 @@ int main (int argc, char *argv[])
         {"vendorID",    required_argument,  0,  'v'},   // PCI vendor id
         {"deviceID",    required_argument,  0,  'd'},   // PCI device id
         {"path",        no_argument,        0,  'p'},   // output linux system path to device
-        {"exist",       no_argument,        0,  'e'},   // output linux system path to device
+        {"exist",       no_argument,        0,  'e'},   // PCI bar existance
         {"adr",         optional_argument,  0,  'a'},   // bar physical addresses
         {"size",        optional_argument,  0,  's'},   // bar sizes
         {"bus",         no_argument,        0,  'b'},   // PCI bus and function
@@ -225,6 +262,16 @@ int main (int argc, char *argv[])
                 break;
 
 
+
+
+
+            /* Argument: 'adr' - physical bar address */
+            case 'h':
+            /* print help */
+            help(argv[0]);
+            intMsgLevel = MSG_LEVEL_BRIEF;  // suppress all outputs
+            goto GD_END_L0;
+            break;
 
             /* Something went wrong */
             default:
